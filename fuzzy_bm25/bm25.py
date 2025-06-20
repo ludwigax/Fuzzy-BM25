@@ -99,12 +99,13 @@ class BM25:
     
     def tokenize_corpus(self, corpus):
         """Tokenize corpus with optional multiprocessing support"""
-        try:
-            with Pool(cpu_count()) as pool:
-                tokenized_corpus = pool.map(self.tokenize_func, corpus)
-            return tokenized_corpus
-        except (OSError, RuntimeError, AttributeError):
-            return [self.tokenize_func(doc) for doc in tqdm(corpus, desc="Tokenizing corpus")]
+        # try:
+        #     with Pool(cpu_count()) as pool:
+        #         tokenized_corpus = pool.map(self.tokenize_func, corpus)
+        #     return tokenized_corpus
+        # except (OSError, RuntimeError, AttributeError):
+        # denied multiprocessing, because of global variables
+        return [self.tokenize_func(doc) for doc in tqdm(corpus, desc="Tokenizing corpus")]
 
     def _score_func(self, q_freq: np.ndarray, idf: float, doc_lens: np.ndarray) -> np.ndarray:
         """Calculate scores for a single term across all documents
